@@ -19,6 +19,7 @@ class KuliahController extends Controller
 
             return $perkuliahan->map(function ($perkuliahan) {
                 return [
+                    'id_perkuliahan' => $perkuliahan->id_perkuliahan,
                     'nim' => $perkuliahan->nim,
                     'nama' => $perkuliahan->mahasiswa->nama,
                     'alamat' => $perkuliahan->mahasiswa->alamat,
@@ -42,6 +43,7 @@ class KuliahController extends Controller
                 ->firstOrFail();
     
             return [
+                'id_perkuliahan' => $perkuliahan->id_perkuliahan,
                 'nim' => $perkuliahan->nim,
                 'nama' => $perkuliahan->mahasiswa->nama,
                 'alamat' => $perkuliahan->mahasiswa->alamat,
@@ -70,6 +72,28 @@ class KuliahController extends Controller
             return response()->json(['message' => 'Something went wrong: ' . $e->getMessage()], 500);
         }
     }
+
+    public function getNilaiByIdPerkuliahan($id_perkuliahan)
+{
+    try {
+        $perkuliahan = Perkuliahan::with('mahasiswa', 'matakuliah')
+            ->where('id_perkuliahan', $id_perkuliahan)
+            ->firstOrFail();
+
+        return [
+            'nim' => $perkuliahan->nim,
+            'nama' => $perkuliahan->mahasiswa->nama,
+            'alamat' => $perkuliahan->mahasiswa->alamat,
+            'tanggal_lahir' => $perkuliahan->mahasiswa->tanggal_lahir,
+            'kode_mk' => $perkuliahan->kode_mk,
+            'nama_mk' => $perkuliahan->matakuliah->nama_mk,
+            'sks' => $perkuliahan->matakuliah->sks,
+            'nilai' => $perkuliahan->nilai,
+        ];
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return response()->json(['message' => 'Perkuliahan dengan ID ini tidak ditemukan'], 404);
+    }
+}
 
     public function updateNilai(Request $request, $nim, $kode_mk)
     {
