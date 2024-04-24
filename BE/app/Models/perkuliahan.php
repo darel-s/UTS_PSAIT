@@ -11,6 +11,7 @@ class Perkuliahan extends Model
 
     protected $table = 'perkuliahan';
     protected $primaryKey = 'id_perkuliahan';
+    public $timestamps = false;
 
     protected $fillable = [
         'id_perkuliahan',
